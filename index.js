@@ -3,7 +3,7 @@ const socket = require('socket.io');
 
 // App setup
 const app = express();
-const server = app.listen(4000,function(){
+let server = app.listen(4000,function(){
     console.log('listening to requests on port 4000');
 });
 
@@ -14,5 +14,17 @@ app.use(express.static('public'));
 let io = socket(server);
 
 io.on('connection',function(socket){
-    console.log('made a socket connection');
+    console.log('made a socket connection',socket.id);
+
+    socket.on('chat',function(data)
+    {
+        io.sockets.emit('chat',data);
+    });
+
+        socket.on('typing',function(data)
+        {
+            socket.broadcast.emit('typing',data);
+        });
+
 });
+
